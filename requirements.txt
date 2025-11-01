@@ -12,3 +12,6 @@ plotly>=5.14.0
 # Утилиты
 tqdm>=4.65.0
 jupyter-contrib-nbextensions
+
+# Для улучшенной токенизации (опционально)
+regex>=2023.0.0

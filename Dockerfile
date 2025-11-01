@@ -12,10 +12,17 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /tmp/
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Загружаем данные NLTK
-RUN python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
+# Создаем директорию для NLTK данных и устанавливаем права
+RUN mkdir -p /home/jovyan/nltk_data && \
+    chown -R ${NB_UID}:${NB_GID} /home/jovyan/nltk_data
 
-# Возвращаемся к пользователю jovyan
+# Переключаемся на пользователя jovyan для загрузки NLTK данных
 USER ${NB_UID}
+
+# Загружаем данные NLTK с правильными путями
+RUN python -c "import nltk; nltk.download('stopwords', download_dir='/home/jovyan/nltk_data'); nltk.download('punkt', download_dir='/home/jovyan/nltk_data'); nltk.download('russian', download_dir='/home/jovyan/nltk_data')"
+
+# Устанавливаем переменную окружения для NLTK
+ENV NLTK_DATA /home/jovyan/nltk_data
 
 WORKDIR /home/jovyan/work
